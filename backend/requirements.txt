@@ -1,0 +1,22 @@
+# Core FastAPI dependencies
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+
+# Pydantic for data validation
+pydantic==2.11.7
+pydantic-settings==2.2.1
+
+# Database and external services
+supabase==2.7.4
+openai==1.99.9
+
+# Environment and utilities
+python-dotenv==1.1.1
+python-multipart==0.0.20
+
+# Development dependencies (optional)
+pytest>=8.2.0
+pytest-asyncio>=0.24.0
+pytest-cov>=5.0.0
+ruff>=0.3.4
+black>=24.3.0

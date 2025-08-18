@@ -1,0 +1,1 @@
+"""Arrakis MVP Backend Application."""
