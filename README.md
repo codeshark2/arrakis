@@ -1,136 +1,101 @@
-# Arrakis - AI-Powered Brand Intelligence System
+# Arrakis - Spice AI Signal Detection Platform
 
-## 🚀 Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
 
-Arrakis is a comprehensive AI-powered brand intelligence system that provides deep research analysis using Perplexity AI's `sonar-deep-research` model. The system crawls 5 unique URLs and provides detailed analysis across 4 key dimensions with reasoning.
+## 🎯 About Arrakis
 
-## ✨ Features
+**Arrakis** is building the world's most advanced signal detection system for consumer brands, called **Spice**, powered by large language models. Our mission is to help customers understand how they are performing in the AI-driven marketplace.
 
-### **🎯 5-URL Deep Research Strategy**
-- **Main Prompt**: Analyzes the primary query
-- **4 Generated Queries**: Automatically generates relevant search queries covering:
-  1. Brand performance and market position
-  2. Customer sentiment and reviews  
-  3. Competitive landscape and positioning
-  4. Industry reputation and authority
+Every day, thousands of AI-generated answers are produced across the web, and we need to analyze these answers for our customers and communicate actionable insights. This repository contains our prototype backend system and UI that powers this capability.
 
-### **🔍 4-Point Analysis with Reasoning**
+## 🚀 Project Overview
 
-#### 1. **Sentiment Analysis**
-- Positive, neutral, or negative tone with percentages
-- Detailed reasoning for sentiment classification
-- Aggregated sentiment across all URLs
+This prototype demonstrates Arrakis's core technology for:
+- **Web Intelligence Gathering**: Automated search and analysis of AI-generated content
+- **Signal Detection**: Identifying trends, sentiment, and performance indicators
+- **Insight Generation**: Converting raw data into actionable business intelligence
+- **Customer Dashboard**: Providing marketers with clear performance insights
 
-#### 2. **Brand Mention Tracking**
-- Count of brand mentions per URL
-- Context analysis (where/how brand is mentioned)
-- Frequency and diversity metrics
-- Reasoning for mention patterns
+## 🏗️ Architecture
 
-#### 3. **Competitor Analysis**
-- Identification of competitors mentioned alongside the brand
-- Favorability scores (-1.0 to 1.0) for each competitor
-- Detailed reasoning for competitive positioning
-- Aggregated competitor insights across URLs
-
-#### 4. **Trust/Authority Score**
-- AI recommendation score (0-100)
-- Brand authority vs. others (0-100)
-- Detailed reasoning for trust assessment
-- Confidence level based on analysis depth
-
-## 🏗️ System Architecture
-
-### **Backend (FastAPI)**
 ```
-backend/
-├── app/
-│   ├── api/
-│   │   ├── deep_research_analytics.py    # NEW: Deep research endpoints
-│   │   ├── dashboard.py                  # Dashboard data API
-│   │   ├── analytics.py                  # Legacy analytics (for reference)
-│   │   ├── runs.py                       # Run management
-│   │   ├── brands.py                     # Brand management
-│   │   ├── evidence.py                   # Evidence tracking
-│   │   ├── prompts.py                    # Prompt management
-│   │   └── health.py                     # Health checks
-│   ├── services/
-│   │   ├── deep_research_perplexity_client.py    # NEW: Deep research client
-│   │   ├── deep_research_storage.py              # NEW: Database storage
-│   │   ├── ai_analyzer.py                        # Legacy analyzer
-│   │   ├── perplexity_client.py                  # Legacy client
-│   │   ├── jobs.py                               # Job management
-│   │   └── judge/                                # AI judge system
-│   ├── core/                                     # Configuration & middleware
-│   ├── schemas/                                  # Data models
-│   └── supabase/                                 # Database client
-├── supabase/sql/
-│   └── 000_complete_schema_safe.sql             # Complete database schema
-├── dev.py                                        # Main server startup
-├── requirements.txt                               # Python dependencies
-└── pyproject.toml                                # Project configuration
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Frontend      │    │    Backend       │    │   External      │
+│   (Next.js)     │◄──►│   (FastAPI)      │◄──►│   APIs          │
+│                 │    │                  │    │                 │
+│ • Dashboard     │    │ • Analytics      │    │ • Perplexity AI │
+│ • Analysis      │    │ • Web Search     │    │ • Supabase      │
+│ • Insights      │    │ • Data Storage   │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-### **Frontend (Next.js)**
-```
-frontend/
-├── app/
-│   ├── page.tsx                                 # Home page with analysis form
-│   ├── dashboard/page.tsx                       # NEW: Comprehensive dashboard
-│   ├── analysis/page.tsx                        # Analysis results display
-│   ├── layout.tsx                               # Layout with navigation
-│   └── api/dashboard/route.ts                   # Frontend API route
-├── components/
-│   └── Navigation.tsx                           # NEW: Top navigation
-├── package.json                                  # Node.js dependencies
-└── tailwind.config.js                           # Styling configuration
-```
+### Core Components
 
-## 🗄️ Database Schema
+- **Frontend**: Modern React-based dashboard built with Next.js 14
+- **Backend**: High-performance API server built with FastAPI
+- **AI Integration**: Perplexity AI for intelligent web search and analysis
+- **Data Storage**: Supabase for scalable data management
+- **Real-time Analytics**: Live insights and performance metrics
 
-### **New Tables Created**
+## 🛠️ Technology Stack
 
-#### `deep_research_analysis`
-- Main analysis results
-- Aggregated metrics across all URLs
-- Sentiment percentages and trust scores
-- JSON storage for raw data
+### Backend
+- **Python 3.12+** - Core application logic
+- **FastAPI** - High-performance web framework
+- **Perplexity AI** - Advanced web search and analysis
+- **Supabase** - Database and real-time features
+- **Pydantic** - Data validation and serialization
 
-#### `url_analysis_results`
-- Individual URL analysis
-- Detailed reasoning for each analysis point
-- Raw response data and usage statistics
+### Frontend
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **Lucide React** - Beautiful icons
 
-#### `competitor_mentions`
-- Aggregated competitor data
-- Favorability scores and mention counts
-- URLs where competitors were mentioned
+## 📋 Prerequisites
+
+- Python 3.12 or higher
+- Node.js 18 or higher
+- npm or yarn package manager
+- Perplexity AI API key
+- Supabase account and credentials
 
 ## 🚀 Quick Start
 
-### **1. Backend Setup**
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/codeshark2/arrakis.git
+cd arrakis
+```
+
+### 2. Backend Setup
+
 ```bash
 cd backend
 
 # Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv venv
+
+# Activate virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+# venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Set up environment variables
 cp env.sample .env
-# Edit .env with your API keys
-
-# Run database migration
-psql -h <host> -U <user> -d <db> -f supabase/sql/000_complete_schema_safe.sql
-
-# Start the server
-python3 dev.py
+# Edit .env with your API keys and configuration
 ```
 
-### **2. Frontend Setup**
+### 3. Frontend Setup
+
 ```bash
 cd frontend
 
@@ -139,283 +104,157 @@ npm install
 
 # Set up environment variables
 cp env.local.sample .env.local
-# Edit .env.local with your backend URL
+# Edit .env.local with your configuration
+```
 
-# Start development server
+### 4. Database Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run the SQL schema from `backend/supabase/sql/000_complete_schema_safe.sql`
+3. Update your `.env` file with Supabase credentials
+
+### 5. Run the Application
+
+#### Backend (Terminal 1)
+```bash
+cd backend
+source venv/bin/activate  # or activate on Windows
+python -m app.main
+```
+
+#### Frontend (Terminal 2)
+```bash
+cd frontend
 npm run dev
 ```
 
-### **3. Access the System**
+The application will be available at:
 - **Frontend**: http://localhost:3000
-- **Backend**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
 
-## 🔌 API Endpoints
+## 🔑 Environment Variables
 
-### **Deep Research Analytics (`/api/deep-research`)**
-
-#### **Start Analysis**
-```http
-POST /api/deep-research/analyze
-```
-Starts comprehensive deep research analysis:
-- Generates 4 additional relevant search queries
-- Crawls 5 unique URLs (1 main + 4 generated)
-- Performs deep research analysis on each URL
-- Stores results in new database tables
-
-#### **Check Status**
-```http
-GET /api/deep-research/status/{run_id}
-```
-Returns current status and progress (4 steps).
-
-#### **Get Results**
-```http
-GET /api/deep-research/results/{run_id}
-```
-Returns complete analysis results once processing is complete.
-
-### **Dashboard API (`/api/dashboard`)**
-```http
-GET /api/dashboard                    # Main dashboard data
-GET /api/dashboard/brand/{brand_name} # Brand-specific data
-```
-
-## 💰 Cost Analysis
-
-### **Perplexity API Costs (Estimated)**
-- **sonar model**: ~$0.005 per query (5 queries = $0.025)
-- **sonar-deep-research model**: ~$0.322 per analysis (5 analyses = $1.61)
-- **Total per brand analysis**: ~$1.64
-
-### **Cost vs. Value**
-- **Traditional approach**: Basic search results, limited insights
-- **Deep research approach**: 
-  - Full content extraction (26K+ characters per URL)
-  - Detailed reasoning for all analysis points
-  - Structured data ready for database storage
-  - Comprehensive competitive intelligence
-
-## 🔄 User Flow
-
-### **Complete Analysis Process**
-```
-1. User enters prompt on home page
-2. System calls /api/deep-research/analyze
-3. Background job starts with 4 steps:
-   - Step 1: Start analysis
-   - Step 2: Generate queries + crawl 5 URLs
-   - Step 3: Store results in database
-   - Step 4: Complete
-4. Dashboard shows real-time progress
-5. Results automatically appear when complete
-6. Data stored in new deep research tables
-```
-
-### **What Happens Behind the Scenes**
-- **Query Generation**: AI generates 4 relevant search queries
-- **URL Crawling**: Top URL from each query gets analyzed
-- **Deep Research**: sonar-deep-research model analyzes each URL
-- **Data Storage**: All results stored in structured database tables
-- **Real-time Updates**: Dashboard shows progress and results
-
-## 🎨 Frontend Features
-
-### **Dashboard Components**
-- **Key Metrics Tiles**: Total analyses, sentiment percentages, trust scores
-- **Recent Analyses**: Latest deep research results with sentiment indicators
-- **Sentiment Overview**: Visual breakdown of sentiment types
-- **Top Performing Brands**: Ranked by trust score
-- **Real-time Progress**: Live updates for ongoing analysis
-
-### **Navigation System**
-- **Top navigation bar** with Arrakis branding
-- **Active page highlighting** for better UX
-- **Responsive design** for all device sizes
-- **Smooth transitions** between pages
-
-## 🔧 Configuration
-
-### **Environment Variables**
-
-#### **Backend (.env)**
+### Backend (.env)
 ```bash
+# Perplexity AI
+PERPLEXITY_API_KEY=your_perplexity_api_key
+
 # Supabase
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# OpenAI
-OPENAI_API_KEY=your_openai_api_key
-
-# Perplexity AI
-PERPLEXITY_API_KEY=your_perplexity_api_key
-PPLX_TARGET_SITES=5  # Set to 5 for deep research system
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Application
-APP_NAME=Arrakis
-DEBUG=true
+LOG_LEVEL=INFO
+CORS_ORIGINS=http://localhost:3000
 ```
 
-#### **Frontend (.env.local)**
+### Frontend (.env.local)
 ```bash
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
-NEXT_PUBLIC_APP_NAME=Arrakis
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-## 📊 Data Output Structure
+## 📊 Features
 
-### **Analysis Summary**
-```json
-{
-  "brand_name": "Tesla",
-  "analysis_summary": {
-    "total_urls_analyzed": 5,
-    "overall_sentiment": {
-      "tone": "positive",
-      "positive_percentage": 65.2,
-      "neutral_percentage": 25.8,
-      "negative_percentage": 9.0
-    },
-    "brand_mentions": {
-      "total_count": 47,
-      "average_per_url": 9.4
-    },
-    "trust_authority": {
-      "overall_score": 78.5,
-      "confidence_level": "high"
-    }
-  }
-}
-```
+### Core Functionality
+- **Prompt Analysis**: Submit natural language prompts for analysis
+- **Web Intelligence**: Automated search across multiple sources
+- **Insight Generation**: AI-powered analysis of search results
+- **Performance Metrics**: Sentiment analysis, coverage metrics, and trust scores
+- **Real-time Dashboard**: Live updates and performance monitoring
 
-### **Detailed URL Analysis**
-```json
-{
-  "url": "https://example.com/article",
-  "sentiment_analysis": {
-    "overall_tone": "positive",
-    "positive_percentage": 70.0,
-    "reasoning": "Article emphasizes innovation and market leadership..."
-  },
-  "brand_mention_tracking": {
-    "mention_count": 12,
-    "contexts": ["innovation", "market position", "customer satisfaction"],
-    "reasoning": "Brand mentioned frequently in positive contexts..."
-  }
-}
-```
+### Analysis Capabilities
+- **Sentiment Analysis**: Understanding tone and sentiment of AI-generated content
+- **Website Coverage**: Comprehensive analysis across multiple web sources
+- **Trust Scoring**: Evaluating source credibility and authority
+- **Trend Detection**: Identifying patterns and emerging signals
 
-## 🚀 Development
+## 🧪 Testing
 
-### **Adding New Features**
-1. **Backend**: Add new services in `app/services/`
-2. **API**: Create new endpoints in `app/api/`
-3. **Database**: Add new tables via migration scripts
-4. **Frontend**: Create new components in `components/`
-
-### **Testing**
+### Backend Tests
 ```bash
-# Backend tests
 cd backend
-python -m pytest
+source venv/bin/activate
+pytest tests/ -v
+```
 
-# Frontend tests
+### Frontend Tests
+```bash
 cd frontend
 npm test
 ```
 
-### **Building for Production**
-```bash
-# Backend
-cd backend
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+## 📁 Project Structure
 
-# Frontend
-cd frontend
-npm run build
-npm start
+```
+arrakis/
+├── backend/                 # FastAPI backend
+│   ├── app/
+│   │   ├── api/            # API endpoints
+│   │   ├── core/           # Configuration and middleware
+│   │   ├── services/       # Business logic
+│   │   └── supabase/       # Database integration
+│   ├── requirements.txt     # Python dependencies
+│   └── pyproject.toml      # Project configuration
+├── frontend/                # Next.js frontend
+│   ├── app/                # App Router pages
+│   ├── components/         # Reusable components
+│   └── package.json        # Node.js dependencies
+└── README.md               # This file
 ```
 
-## 🔒 Security & Performance
+## 🔧 Development
 
-### **Security Features**
-- **Input validation** on all forms
-- **XSS protection** via Next.js
-- **CSRF protection** built-in
-- **Secure API calls** to backend
+### Code Style
+- **Backend**: Black formatter, Ruff linter
+- **Frontend**: ESLint, Prettier
+- **Git**: Conventional commits
 
-### **Performance Optimizations**
-- **Background job processing** for analysis
-- **Real-time progress updates** via polling
-- **Efficient database queries** with proper indexing
-- **Code splitting** via Next.js App Router
+### Adding New Features
+1. Create feature branch: `git checkout -b feature/your-feature`
+2. Implement changes with tests
+3. Run linting and tests
+4. Submit pull request
 
-## 🐛 Troubleshooting
+## 📈 Performance
 
-### **Common Issues**
-1. **API Key Missing**: Ensure all API keys are set in `.env`
-2. **Database Errors**: Verify migration script was applied
-3. **Frontend Build Errors**: Ensure `lucide-react` is installed
-4. **Analysis Failures**: Check Perplexity API quota and rate limits
+- **Backend**: FastAPI with async support, sub-second response times
+- **Frontend**: Next.js 14 with App Router, optimized bundle size
+- **Database**: Supabase with real-time subscriptions
+- **AI Integration**: Perplexity AI for high-quality search results
 
-### **Debug Information**
-- Comprehensive logging throughout the system
-- Real-time status updates in dashboard
-- Detailed error messages and stack traces
-- API documentation at `/docs` endpoint
+## 🤝 Contributing
 
-## 📚 Dependencies
+We welcome contributions! Please see our contributing guidelines:
 
-### **Backend (Python)**
-- **FastAPI**: Web framework
-- **OpenAI**: GPT-4o integration
-- **Supabase**: Database and storage
-- **Pydantic**: Data validation
-- **Uvicorn**: ASGI server
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-### **Frontend (Node.js)**
-- **Next.js 14**: React framework
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling
-- **Lucide React**: Icons
+## 📄 License
 
-## 🔄 Updates & Maintenance
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### **Regular Updates**
-- Keep dependencies updated
-- Monitor API quotas and costs
-- Update database schema as needed
-- Maintain responsive design standards
+## 🆘 Support
 
-### **Performance Monitoring**
-- Track analysis completion times
-- Monitor API response times
-- Optimize database queries
-- Implement caching strategies
+- **Documentation**: [API Docs](http://localhost:8000/docs) (when running)
+- **Issues**: [GitHub Issues](https://github.com/codeshark2/arrakis/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/codeshark2/arrakis/discussions)
 
-## 🎯 Future Enhancements
+## 🚀 Roadmap
 
-### **Planned Features**
-- **Batch Processing**: Analyze multiple brands simultaneously
-- **Historical Tracking**: Compare analysis over time
-- **Alert System**: Notify on significant sentiment changes
-- **Export Capabilities**: CSV/Excel report generation
-- **User Authentication**: Multi-user support
-- **API Rate Limiting**: Advanced quota management
+- [ ] Enhanced AI analysis capabilities
+- [ ] Multi-language support
+- [ ] Advanced reporting and analytics
+- [ ] Enterprise features and integrations
+- [ ] Mobile application
+- [ ] API rate limiting and monitoring
 
 ---
 
-## 🎉 Getting Started
+**Built by Kshitij**
 
-1. **Clone the repository**
-2. **Set up environment variables**
-3. **Run database migration**
-4. **Start backend server** (`python3 dev.py`)
-5. **Start frontend server** (`npm run dev`)
-6. **Access the system** at http://localhost:3000
-
-**Welcome to Arrakis - Your AI-Powered Brand Intelligence Platform!** 🚀
-
-For support or questions, check the API documentation at http://localhost:8000/docs when the backend is running.
+*Empowering brands with AI-driven insights through Spice - the world's most advanced signal detection system.*
