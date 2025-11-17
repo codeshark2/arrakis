@@ -13,8 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .core.cors import setup_cors
 from .core.middleware import setup_middleware
+from .core.rate_limit import RateLimitMiddleware
 from .api import health, analytics, dashboard
-# from .api import deep_research_analytics  # Temporarily commented out due to missing JobManager
 
 # Create FastAPI app
 app = FastAPI(
@@ -24,8 +24,11 @@ app = FastAPI(
     debug=settings.debug
 )
 
-# Setup middleware
+# Setup middleware (logging, error handling, etc.)
 setup_middleware(app)
+
+# Add rate limiting middleware
+app.add_middleware(RateLimitMiddleware)
 
 # Setup CORS
 setup_cors(app)
@@ -34,7 +37,6 @@ setup_cors(app)
 app.include_router(health.router)
 app.include_router(analytics.router)
 app.include_router(dashboard.router)
-# app.include_router(deep_research_analytics.router)  # Temporarily commented out
 
 
 @app.get("/")
