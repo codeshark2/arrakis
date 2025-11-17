@@ -10,7 +10,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -96,7 +95,6 @@ Thumbs.db
 *.swp
 
 # Docker
-.dockerignore
 docker-compose.override.yml
 
 # Secrets and credentials
