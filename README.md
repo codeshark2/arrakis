@@ -4,6 +4,7 @@
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
 ## 🎯 About Arrakis
 
@@ -57,6 +58,13 @@ This prototype demonstrates Arrakis's core technology for:
 
 ## 📋 Prerequisites
 
+### Option 1: Docker (Recommended)
+- Docker 20.10 or higher
+- Docker Compose 2.0 or higher
+- Perplexity AI API key
+- Supabase account and credentials
+
+### Option 2: Local Development
 - Python 3.12 or higher
 - Node.js 18 or higher
 - npm or yarn package manager
@@ -65,14 +73,77 @@ This prototype demonstrates Arrakis's core technology for:
 
 ## 🚀 Quick Start
 
-### 1. Clone the Repository
+### Option 1: Docker (Recommended)
+
+The fastest way to get Arrakis up and running is with Docker:
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/codeshark2/arrakis.git
 cd arrakis
 ```
 
-### 2. Backend Setup
+#### 2. Set Up Environment Variables
+
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env with your API keys and configuration
+# You'll need:
+# - PERPLEXITY_API_KEY
+# - SUPABASE_URL
+# - SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY
+```
+
+#### 3. Database Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run the SQL schema from `backend/supabase/sql/000_complete_schema_safe.sql`
+3. Update your `.env` file with Supabase credentials
+
+#### 4. Build and Run with Docker
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+The application will be available at:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+
+#### Development Mode with Hot Reload
+
+For development with hot-reloading:
+
+```bash
+# Use the development compose file
+docker-compose -f docker-compose.dev.yml up
+
+# Or build and run
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+### Option 2: Local Development
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/codeshark2/arrakis.git
+cd arrakis
+```
+
+#### 2. Backend Setup
 
 ```bash
 cd backend
@@ -94,7 +165,7 @@ cp env.sample .env
 # Edit .env with your API keys and configuration
 ```
 
-### 3. Frontend Setup
+#### 3. Frontend Setup
 
 ```bash
 cd frontend
@@ -107,13 +178,13 @@ cp env.local.sample .env.local
 # Edit .env.local with your configuration
 ```
 
-### 4. Database Setup
+#### 4. Database Setup
 
 1. Create a Supabase project at [supabase.com](https://supabase.com)
 2. Run the SQL schema from `backend/supabase/sql/000_complete_schema_safe.sql`
 3. Update your `.env` file with Supabase credentials
 
-### 5. Run the Application
+#### 5. Run the Application
 
 #### Backend (Terminal 1)
 ```bash
