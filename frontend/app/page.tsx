@@ -3,39 +3,85 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+// API configuration from environment
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+// Input validation constants
+const MAX_PROMPT_LENGTH = 2000;
+
 export default function HomePage() {
   const [prompt, setPrompt] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const validatePrompt = (text: string): string | null => {
+    if (!text.trim()) {
+      return 'Prompt cannot be empty';
+    }
+    if (text.length > MAX_PROMPT_LENGTH) {
+      return `Prompt exceeds maximum length of ${MAX_PROMPT_LENGTH} characters`;
+    }
+    return null;
+  };
+
   const handleAnalyze = async () => {
-    if (!prompt.trim()) return;
-    
+    // Clear previous error
+    setError(null);
+
+    // Validate input
+    const validationError = validatePrompt(prompt);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setIsAnalyzing(true);
-    
+
     try {
-      // Call the working analytics API
-      const response = await fetch('http://localhost:8000/api/analytics/analyze', {
+      // Build headers
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add API key if configured
+      if (API_KEY) {
+        headers['X-API-Key'] = API_KEY;
+      }
+
+      // Call the analytics API
+      const response = await fetch(`${API_BASE_URL}/api/analytics/analyze`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
+        headers,
+        body: JSON.stringify({ prompt: prompt.trim() }),
       });
       
       if (response.ok) {
         const results = await response.json();
-        // Store results in localStorage for the analysis page
-        localStorage.setItem('analysisResults', JSON.stringify(results));
+
+        // Validate response data before storing
+        if (!results || typeof results !== 'object') {
+          throw new Error('Invalid response from server');
+        }
+
+        // Store results in sessionStorage (more secure than localStorage)
+        // Use sessionStorage to auto-clear on tab close
+        sessionStorage.setItem('analysisResults', JSON.stringify(results));
+
         // Redirect to analysis page
         router.push('/analysis');
+      } else if (response.status === 429) {
+        setError('Rate limit exceeded. Please wait a moment and try again.');
+      } else if (response.status === 401) {
+        setError('Authentication failed. Please check your API key configuration.');
       } else {
-        console.error('Analysis failed:', response.statusText);
-        alert('Analysis failed. Please try again.');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.detail || 'Analysis failed. Please try again.');
       }
     } catch (error) {
       console.error('Analysis failed:', error);
-      alert('Analysis failed. Please try again.');
+      setError('Unable to connect to the server. Please check your connection and try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -61,13 +107,28 @@ export default function HomePage() {
           </h2>
           
           <div className="space-y-4">
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your prompt here... For example: 'Analyze customer sentiment about our new product launch'"
-              className="w-full h-32 p-4 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
-              disabled={isAnalyzing}
-            />
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                {error}
+              </div>
+            )}
+
+            <div className="relative">
+              <textarea
+                value={prompt}
+                onChange={(e) => {
+                  setPrompt(e.target.value);
+                  setError(null); // Clear error on input change
+                }}
+                placeholder="Enter your prompt here... For example: 'Analyze customer sentiment about our new product launch'"
+                className="w-full h-32 p-4 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+                disabled={isAnalyzing}
+                maxLength={MAX_PROMPT_LENGTH}
+              />
+              <div className="absolute bottom-2 right-2 text-sm text-gray-400">
+                {prompt.length}/{MAX_PROMPT_LENGTH}
+              </div>
+            </div>
             
             <div className="flex justify-center">
               <button

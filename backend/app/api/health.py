@@ -15,34 +15,39 @@ async def health_check():
     try:
         # Get current metrics
         current_metrics = metrics.get_metrics()
-        
+
+        from datetime import datetime
+        current_time = datetime.utcnow().isoformat() + "Z"
+
         return {
             "ok": True,
             "status": "healthy",
             "metrics": current_metrics,
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": current_time
         }
-        
+
     except Exception as e:
         logger.error(f"Health check failed: {e}")
+        from datetime import datetime
+        current_time = datetime.utcnow().isoformat() + "Z"
+
+        # Don't expose internal error details
         return {
             "ok": False,
             "status": "unhealthy",
-            "error": str(e),
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": current_time
         }
 
 
 @router.get("/health/readiness")
 async def readiness():
     """Readiness check for external service dependencies."""
-    openai_ok = bool(os.getenv("OPENAI_API_KEY"))
+    # Check if required services are configured (without exposing details)
     pplx_ok = bool(os.getenv("PERPLEXITY_API_KEY"))
-    target_sites = int(os.getenv("PPLX_TARGET_SITES", "50"))
-    
+
+    # Only return minimal status information
+    # Don't expose which specific API keys are present/missing
     return {
-        "openai_key_present": openai_ok,
-        "perplexity_key_present": pplx_ok,
-        "target_sites": target_sites,
-        "status": "ready" if openai_ok and pplx_ok else "degraded"
+        "status": "ready" if pplx_ok else "not_ready",
+        "message": "Service is ready" if pplx_ok else "Service is not fully configured"
     }

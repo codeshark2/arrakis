@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import Dict, List, Any
 from ..supabase.client import db
 from ..core.config import settings
+from ..core.security import InputValidator
 import logging
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ async def get_dashboard_data() -> Dict[str, Any]:
         
     except Exception as e:
         logger.error(f"Error fetching dashboard data: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to fetch dashboard data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch dashboard data. Please try again later.")
 
 async def _get_total_analyses() -> int:
     """Get total number of deep research analyses."""
@@ -213,7 +214,9 @@ async def _get_recent_insights(limit: int = 5) -> List[Dict[str, Any]]:
 async def get_brand_dashboard(brand_name: str) -> Dict[str, Any]:
     """Get dashboard data for a specific brand."""
     try:
-        logger.info(f"Fetching dashboard data for brand: {brand_name}")
+        # Validate brand name to prevent SQL injection
+        brand_name = InputValidator.validate_brand_name(brand_name)
+        logger.info(f"Fetching dashboard data for brand: {InputValidator.sanitize_for_log(brand_name)}")
         
         # Get brand-specific analyses
         brand_analyses = await _get_brand_analyses(brand_name)
@@ -239,7 +242,7 @@ async def get_brand_dashboard(brand_name: str) -> Dict[str, Any]:
         
     except Exception as e:
         logger.error(f"Error fetching brand dashboard data: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to fetch brand data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch brand data. Please try again later.")
 
 async def _get_brand_analyses(brand_name: str) -> List[Dict[str, Any]]:
     """Get all analyses for a specific brand."""

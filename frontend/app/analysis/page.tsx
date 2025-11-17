@@ -33,16 +33,25 @@ export default function AnalysisPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get analysis results from localStorage
-    const storedResults = localStorage.getItem('analysisResults');
-    
+    // Get analysis results from sessionStorage (more secure)
+    const storedResults = sessionStorage.getItem('analysisResults');
+
     if (storedResults) {
       try {
         const results = JSON.parse(storedResults);
+
+        // Validate the parsed data structure
+        if (!results || typeof results !== 'object') {
+          throw new Error('Invalid data structure');
+        }
+
         setAnalysisResult(results);
         setLoading(false);
+
+        // Clear the stored data after loading (one-time use)
+        // sessionStorage.removeItem('analysisResults');
       } catch (e) {
-        setError('Failed to parse analysis results');
+        setError('Failed to parse analysis results. Data may be corrupted.');
         setLoading(false);
       }
     } else {

@@ -3,11 +3,12 @@
 import logging
 import uuid
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from typing import Dict, Any, List
 from ..services.perplexity_client import PerplexityClient
 from ..supabase.client import db
 from ..core.config import settings
+from ..core.security import InputValidator
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -17,7 +18,13 @@ perplexity_client = PerplexityClient()
 
 
 class AnalyzeRequest(BaseModel):
-    prompt: str
+    prompt: str = Field(..., min_length=1, max_length=2000, description="Analysis prompt")
+
+    @field_validator('prompt')
+    @classmethod
+    def validate_prompt(cls, v: str) -> str:
+        """Validate and sanitize the prompt."""
+        return InputValidator.validate_prompt(v)
 
 
 class AnalysisResponse(BaseModel):
@@ -32,10 +39,13 @@ class AnalysisResponse(BaseModel):
 async def analyze_prompt(request: AnalyzeRequest):
     """Analyze a prompt using Perplexity AI and store results in database."""
     try:
-        logger.info(f"Starting analysis for prompt: {request.prompt}")
-        
+        logger.info(f"Starting analysis for prompt: {InputValidator.sanitize_for_log(request.prompt)}")
+
         # Extract brand name from prompt
         brand_name = _extract_brand_name(request.prompt)
+
+        # Validate extracted brand name
+        brand_name = InputValidator.validate_brand_name(brand_name)
         
         # Generate unique analysis ID
         analysis_id = str(uuid.uuid4())
@@ -52,7 +62,7 @@ async def analyze_prompt(request: AnalyzeRequest):
         # Extract the four parameters from Perplexity results
         analysis_result = _extract_four_parameters(perplexity_result, brand_name)
         
-        logger.info(f"Analysis completed successfully for brand: {brand_name}")
+        logger.info(f"Analysis completed successfully for brand: {InputValidator.sanitize_for_log(brand_name)}")
         
         return AnalysisResponse(
             sentiment=analysis_result["sentiment"],
@@ -64,7 +74,8 @@ async def analyze_prompt(request: AnalyzeRequest):
         
     except Exception as e:
         logger.error(f"Analysis failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+        # Don't expose internal error details to clients
+        raise HTTPException(status_code=500, detail="Analysis failed. Please try again later.")
 
 
 async def _store_analysis_results(analysis_id: str, brand_name: str, prompt: str, perplexity_result: Dict[str, Any]):
