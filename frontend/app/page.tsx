@@ -2,40 +2,66 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { config } from '@/lib/config';
 
 export default function HomePage() {
   const [prompt, setPrompt] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleAnalyze = async () => {
     if (!prompt.trim()) return;
-    
+
     setIsAnalyzing(true);
-    
+    setError(null);
+
     try {
-      // Call the working analytics API
-      const response = await fetch('http://localhost:8000/api/analytics/analyze', {
+      // Call the analytics API using configured URL
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), config.apiTimeout);
+
+      const response = await fetch(`${config.apiUrl}/api/analytics/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt }),
+        signal: controller.signal,
       });
-      
+
+      clearTimeout(timeoutId);
+
       if (response.ok) {
         const results = await response.json();
-        // Store results in localStorage for the analysis page
-        localStorage.setItem('analysisResults', JSON.stringify(results));
+
+        // Store results - use sessionStorage instead of localStorage for better security
+        // localStorage persists across sessions, sessionStorage is cleared when tab closes
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem('analysisResults', JSON.stringify(results));
+        } else if (config.useLocalStorage && typeof localStorage !== 'undefined') {
+          // Fallback to localStorage only if explicitly enabled
+          localStorage.setItem('analysisResults', JSON.stringify(results));
+        }
+
         // Redirect to analysis page
         router.push('/analysis');
       } else {
-        console.error('Analysis failed:', response.statusText);
-        alert('Analysis failed. Please try again.');
+        const errorText = await response.text().catch(() => 'Unknown error');
+        setError(`Analysis failed: ${response.statusText}`);
+        console.error('Analysis failed:', errorText);
       }
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          setError('Request timed out. Please try again.');
+        } else {
+          setError(`Analysis failed: ${error.message}`);
+        }
+      } else {
+        setError('Analysis failed. Please try again.');
+      }
       console.error('Analysis failed:', error);
-      alert('Analysis failed. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -43,6 +69,13 @@ export default function HomePage() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 text-sm">{error}</p>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -59,7 +92,7 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
             What would you like to analyze?
           </h2>
-          
+
           <div className="space-y-4">
             <textarea
               value={prompt}
@@ -68,7 +101,7 @@ export default function HomePage() {
               className="w-full h-32 p-4 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
               disabled={isAnalyzing}
             />
-            
+
             <div className="flex justify-center">
               <button
                 onClick={handleAnalyze}
@@ -103,17 +136,17 @@ export default function HomePage() {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Sentiment Analysis</h3>
           <p className="text-gray-600">Positive, neutral, or negative tone about the brand</p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Brand Mention Tracking</h3>
           <p className="text-gray-600">How often is the brand mentioned? In what contexts?</p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Website Coverage</h3>
           <p className="text-gray-600">How many unique websites mention the brand out of 50 crawled</p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Trust/Authority Score</h3>
           <p className="text-gray-600">How often AI recommends the brand vs others</p>
