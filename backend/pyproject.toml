@@ -10,7 +10,7 @@ authors = [{name = "Arrakis Team", email = "team@arrakis.com"}]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi==0.116.1",
+    "fastapi==0.121.2",
     "uvicorn[standard]==0.35.0",
     "pydantic==2.11.7",
     "pydantic-settings==2.2.1",
