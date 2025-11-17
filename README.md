@@ -1,6 +1,8 @@
 # Arrakis - Spice AI Signal Detection Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/codeshark2/arrakis/actions/workflows/ci.yml/badge.svg)](https://github.com/codeshark2/arrakis/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/codeshark2/arrakis/actions/workflows/codeql.yml/badge.svg)](https://github.com/codeshark2/arrakis/actions/workflows/codeql.yml)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
@@ -244,14 +246,88 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues**: [GitHub Issues](https://github.com/codeshark2/arrakis/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/codeshark2/arrakis/discussions)
 
+## 🚀 Deployment
+
+### Docker Deployment (Recommended)
+
+The easiest way to deploy Arrakis is using Docker:
+
+```bash
+# Clone the repository
+git clone https://github.com/codeshark2/arrakis.git
+cd arrakis
+
+# Create environment files
+cp backend/env.sample backend/.env
+cp frontend/env.local.sample frontend/.env.local
+
+# Edit the environment files with your configuration
+# IMPORTANT: Add your API keys for Supabase and Perplexity
+
+# Start the application
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the application
+docker-compose down
+```
+
+The application will be available at:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+
+### Manual Deployment
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instructions including:
+- Production environment setup
+- Nginx configuration
+- SSL/TLS setup
+- Database migrations
+- Monitoring and logging
+
+### CI/CD Pipeline
+
+This repository includes a comprehensive CI/CD pipeline with GitHub Actions:
+
+- ✅ **Automated Testing** - Backend (pytest) and Frontend (Jest)
+- ✅ **Code Quality** - Linting (Ruff, ESLint) and Formatting (Black)
+- ✅ **Type Checking** - TypeScript type validation
+- ✅ **Build Verification** - Ensures code compiles successfully
+- ✅ **Docker Builds** - Validates Docker images build correctly
+- ✅ **Security Scanning** - Trivy vulnerability scanner
+- ✅ **CodeQL Analysis** - Automated security analysis
+
+The pipeline runs on every push and pull request to main/develop branches.
+
+## 🔒 Security
+
+- **Rate Limiting**: 100 requests per 60 seconds per IP
+- **Input Validation**: Sanitization against SQL injection and XSS
+- **Environment Variables**: Secure configuration management
+- **Docker Security**: Non-root containers
+- **Dependency Updates**: Automated via Dependabot
+- **Security Scanning**: CodeQL and Trivy
+
+For security issues, please see [SECURITY.md](SECURITY.md).
+
 ## 🚀 Roadmap
 
+- [x] CI/CD pipeline with GitHub Actions
+- [x] Docker containerization
+- [x] Comprehensive test coverage
+- [x] API documentation
+- [x] Rate limiting and security features
 - [ ] Enhanced AI analysis capabilities
 - [ ] Multi-language support
 - [ ] Advanced reporting and analytics
 - [ ] Enterprise features and integrations
 - [ ] Mobile application
-- [ ] API rate limiting and monitoring
+- [ ] Redis-based rate limiting for distributed deployments
+- [ ] WebSocket support for real-time updates
+- [ ] GraphQL API
 
 ---
 
