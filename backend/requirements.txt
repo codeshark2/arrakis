@@ -7,7 +7,7 @@ pydantic==2.11.7
 pydantic-settings==2.2.1
 
 # Database and external services
-supabase==2.7.4
+supabase==2.24.0
 openai==1.99.9
 
 # Environment and utilities
